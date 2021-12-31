@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
 
-const AuctionContractAddress = '0xb053830D63169d79faC21D5b0293b2084a60db6F';
+const AuctionContractAddress = '0x4c89F52a1871188a7aCc3889B8282D017bADf1c2';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -35,7 +35,7 @@ function App() {
         const highestBid = await contract.fetchHighestBid();
         const { bidAmount, bidder } = highestBid;
 
-        // Convert ammount from Wei to ether and round to 4 decimals
+        // Convert amount from Wei to ether and round to 4 decimals
         setHighestBid(parseFloat(formatEther(bidAmount.toString())).toPrecision(4));
         setHighestBidder(bidder.toLowerCase());
       } catch (e) {
@@ -48,11 +48,9 @@ function App() {
     if (typeof window.ethereum !== 'undefined') {
       const contract = await initializeProvider();
       try {
-        // // const myBid = await contract.bids(account);
         console.log("mybid: ", await account)
         const myBid = await contract.bids(account);
-        // const myBid = 4000000000000000000;
-        // setMyBid(parseFloat(formatEther(myBid.toString())).toPrecision(4));
+        // const myBid = 5000000000000000000;
         setMyBid(parseFloat(formatEther(myBid.toString())));
       } catch (e) {
         console.log('error fetching my bid: ', e);
@@ -131,7 +129,7 @@ function App() {
         <div>My Bid: {myBid} ETH</div>
         <div>Auction Highest Bid Amount: {highestBid}</div>
         <div>
-          Auction Highest Bidder: {' '}
+          Auction Highest Bidder: {' t'}
           {highestBidder === emptyAddress
             ? 'null'
             : highestBidder === account
