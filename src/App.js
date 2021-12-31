@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
 
-const AuctionContractAddress = '0xa98D349C336c9b8E29aDd524d67C9672A98622D0';
+const AuctionContractAddress = '0xb6BE48C00f802c4Ab5E24Df4DCfE8306508fDB1c';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -13,11 +13,10 @@ function App() {
   const [account, setAccount] = useState('');
   const [amount, setAmount] = useState(0);
   const [myBid, setMyBid] = useState(0);
-  const [isOwner, setIsOwner] = useState(0);
+  const [isOwner, setIsOwner] = useState(false);
   const [highestBid, setHighestBid] = useState(0);
   const [highestBidder, setHighestBidder] = useState('');
-
-  // 
+ 
   async function initializeProvider() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -28,22 +27,7 @@ function App() {
     const account = await window.ethereum.request({ method: 'eth_requestAccounts' });
     setAccount(account[0]);
   }
-
-  async function fetchMyBid() {
-    if (typeof window.ethereum !== 'undefined') {
-      const contract = await initializeProvider();
-      try {
-        // // const myBid = await contract.bids(account);
-        // console.log("myBid: ", await contract.bids(account));
-        const myBid = 4000000000000000000;
-        // setMyBid(parseFloat(formatEther(myBid.toString())).toPrecision(4));
-        setMyBid(parseFloat(formatEther(myBid.toString())));
-      } catch (e) {
-        console.log('error fetching my bid: ', e);
-      }
-    }
-  }
-
+  
   async function fetchHighestBid() {
     if (typeof window.ethereum !== 'undefined') {
       const contract = await initializeProvider();
@@ -60,6 +44,24 @@ function App() {
     }
   }
 
+  async function fetchMyBid() {
+    if (typeof window.ethereum !== 'undefined') {
+      const contract = await initializeProvider();
+      try {
+        // // const myBid = await contract.bids(account);
+        console.log("mybid: ", await account)
+        const testAmount = await contract.bids(account);
+        console.log("mbidammount:", testAmount )
+        // console.log("myBid: ", await contract.bids(account));
+        const myBid = 4000000000000000000;
+        // setMyBid(parseFloat(formatEther(myBid.toString())).toPrecision(4));
+        setMyBid(parseFloat(formatEther(myBid.toString())));
+      } catch (e) {
+        console.log('error fetching my bid: ', e);
+      }
+    }
+  }
+ 
   async function fetchOwner() {
     if (typeof window.ethereum !== 'undefined') {
       const contract = await initializeProvider();
@@ -127,7 +129,7 @@ function App() {
   return (
     <div>
       <div>
-        <div>Connected Account: {account} ETH</div>
+        <div>Connected Account: {account}</div>
         <div>My Bid: {myBid} ETH</div>
         <div>Auction Highest Bid Amount: {highestBid}</div>
         <div>
