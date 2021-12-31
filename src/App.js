@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
 
-const AuctionContractAddress = '0x0aDF7C167EaC923dd432d16CAc0508Df8Ca2fAA9';
+const AuctionContractAddress = '0x897a79BD4f73bF1A7f66247dD78e1045EDC74cF0';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -153,7 +153,7 @@ function App() {
           <button type="submit">Submit</button>
         </form>
       ) : (
-        ""
+        <div>Is owner</div>
       )}
     </div>
   );

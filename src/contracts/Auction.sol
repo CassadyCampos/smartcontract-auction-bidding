@@ -74,6 +74,16 @@ contract Auction {
         return true;
     }
 
+    function fetchEndTime() public view returns(uint256) {
+        return endTime;
+    }
+
+
+    function fetchTimeDifference() public view returns(uint) {
+        uint diff = (endTime - startTime);
+        return diff;
+    }
+
     function fetchHighestBid() public view returns (HighestBid memory) {
         HighestBid memory _highestBid = highestBid;
         return _highestBid;
