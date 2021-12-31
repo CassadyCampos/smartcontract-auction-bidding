@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
 
-const AuctionContractAddress = '0x4c89F52a1871188a7aCc3889B8282D017bADf1c2';
+const AuctionContractAddress = '0x0aDF7C167EaC923dd432d16CAc0508Df8Ca2fAA9';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -19,6 +19,7 @@ function App() {
  
   async function initializeProvider() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    
     const signer = provider.getSigner();
     return new ethers.Contract(AuctionContractAddress, Auction.abi, signer);
   }
@@ -61,7 +62,9 @@ function App() {
   async function fetchOwner() {
     if (typeof window.ethereum !== 'undefined') {
       const contract = await initializeProvider();
+      console.log("contract", contract);
       try {
+        console.log("setting");
         const owner = await contract.getOwner();
         setIsOwner(owner.toLowerCase() === account);
       } catch (e) {
@@ -129,7 +132,7 @@ function App() {
         <div>My Bid: {myBid} ETH</div>
         <div>Auction Highest Bid Amount: {highestBid}</div>
         <div>
-          Auction Highest Bidder: {' t'}
+          Auction Highest Bidder: {' '}
           {highestBidder === emptyAddress
             ? 'null'
             : highestBidder === account
