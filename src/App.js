@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
 
-const AuctionContractAddress = '0xb6BE48C00f802c4Ab5E24Df4DCfE8306508fDB1c';
+const AuctionContractAddress = '0xb053830D63169d79faC21D5b0293b2084a60db6F';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -27,7 +27,7 @@ function App() {
     const account = await window.ethereum.request({ method: 'eth_requestAccounts' });
     setAccount(account[0]);
   }
-  
+
   async function fetchHighestBid() {
     if (typeof window.ethereum !== 'undefined') {
       const contract = await initializeProvider();
@@ -50,10 +50,8 @@ function App() {
       try {
         // // const myBid = await contract.bids(account);
         console.log("mybid: ", await account)
-        const testAmount = await contract.bids(account);
-        console.log("mbidammount:", testAmount )
-        // console.log("myBid: ", await contract.bids(account));
-        const myBid = 4000000000000000000;
+        const myBid = await contract.bids(account);
+        // const myBid = 4000000000000000000;
         // setMyBid(parseFloat(formatEther(myBid.toString())).toPrecision(4));
         setMyBid(parseFloat(formatEther(myBid.toString())));
       } catch (e) {
