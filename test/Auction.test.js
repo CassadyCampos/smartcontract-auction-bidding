@@ -7,21 +7,26 @@ contract("Auction", async accounts => {
     const userAccountTwo = accounts[2];
     const amount = 5000000000000000000; //5eth
     const smallAmount = 3000000000000000000; //3eth
-
+    const currentCar = {
+        make: 'Acura',
+        model:'CSX',
+        year: '2008',
+        colour: 'Black'
+    }
     beforeEach(async () => {
-        auction = await Auction.new({from: ownerAccount });
+        auction = await Auction.new({ from: ownerAccount });
     })
 
 
     it("should make bid", async () => {
-        await auction.makeBid({value: amount, from: userAccountOne});
+        await auction.makeBid({ value: amount, from: userAccountOne });
         const bidAmount = await auction.bids(userAccountOne);
-        assert.equal(bidAmount. amount);
+        assert.equal(bidAmount.amount);
     });
 
     it("should reject owner's bid", async () => {
         try {
-            await auction.makeBid({value: amount, from: ownerAccount});
+            await auction.makeBid({ value: amount, from: ownerAccount });
         } catch (e) {
             assert.include(e.message, "Owner is not allowed to bid");
         }
@@ -29,15 +34,15 @@ contract("Auction", async accounts => {
 
     it("should require higher bid amount", async () => {
         try {
-            await auction.makeBid({value: amount, from: userAccountOne});
-            await auction.makeBid({value: smallAmount, from: userAccountTwo});
+            await auction.makeBid({ value: amount, from: userAccountOne });
+            await auction.makeBid({ value: smallAmount, from: userAccountTwo });
         } catch (e) {
             assert.include(e.message, "Bid error: Make a higher Bid.");
         }
     })
 
     it("should fetch highest bid", async () => {
-        await auction.makeBid({value: amount, from: userAccountOne});
+        await auction.makeBid({ value: amount, from: userAccountOne });
         const highestBid = await auction.fetchHighestBid();
         assert.equal(highestBid.bidAmount, amount);
         assert.equal(highestBid.bidder, userAccountOne);
@@ -46,5 +51,13 @@ contract("Auction", async accounts => {
     it("should fetch owner", async () => {
         const owner = await auction.getOwner();
         assert.equal(owner, ownerAccount);
+    })
+
+    it("should fetch car details", async () => {
+        const car = await auction.fetchCurrentCarDetails();
+        assert.equal(car.make, 'Acura');
+        assert.equal(car.model, 'CSX');
+        assert.equal(car.year, '2008');
+        assert.equal(car.colour, 'Black');
     })
 })

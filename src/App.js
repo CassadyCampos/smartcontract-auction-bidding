@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
-
-const AuctionContractAddress = '0x897a79BD4f73bF1A7f66247dD78e1045EDC74cF0';
+import Car from './models/CarModel.js'
+const AuctionContractAddress = '0xfE94CEdF68138bCd2f119E06bd86875aa0284a5F';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -16,7 +16,7 @@ function App() {
   const [isOwner, setIsOwner] = useState(false);
   const [highestBid, setHighestBid] = useState(0);
   const [highestBidder, setHighestBidder] = useState('');
- 
+ const [currentCar, setCurrentCar] = useState(new Car);
   async function initializeProvider() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     
@@ -41,6 +41,18 @@ function App() {
         setHighestBidder(bidder.toLowerCase());
       } catch (e) {
         console.log('error fetching highest bid: ', e);
+      }
+    }
+  }
+
+  async function fetchCurrentCarDetails() {
+    if (typeof window.etheruem !== 'undefined') {
+      const contract = await initializeProvider();
+      try {
+        const car = await contract.fetchCurrentCarDetails();
+        setCurrentCar(car); 
+      } catch (e) {
+        console.log('error fetching car details: ', e);
       }
     }
   }
@@ -126,9 +138,15 @@ function App() {
   }, [account]);
 
   return (
-    <div>
+    <div className='container'>
+      <div className='text-right'>Connected Account: {account}</div>
+
+      <h1>Defi Car Auction</h1>
       <div>
-        <div>Connected Account: {account}</div>
+        Current Car Up for Bidding:
+      </div>
+
+      <div className='mt-4'>
         <div>My Bid: {myBid} ETH</div>
         <div>Auction Highest Bid Amount: {highestBid}</div>
         <div>

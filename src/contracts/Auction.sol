@@ -7,10 +7,11 @@ contract Auction {
     uint256 public endTime;
     mapping(address => uint256) public bids;
 
-    struct House {
-        string houseType;
-        string houseColor;
-        string houseLocation;
+    struct Car {
+        string make;
+        string model;
+        string year;
+        string colour;
     }
 
     struct HighestBid {
@@ -18,7 +19,7 @@ contract Auction {
         address bidder;
     }
 
-    House public newHouse;
+    Car public currentCar;
     HighestBid public highestBid;
 
     modifier isOngoing() {
@@ -46,9 +47,11 @@ contract Auction {
         owner = msg.sender;
         startTime = block.timestamp;
         endTime = block.timestamp + 1 hours;
-        newHouse.houseColor = '#FFFFFF';
-        newHouse.houseLocation = 'Lagos, Nigeria';
-        newHouse.houseType = 'Duplex';
+
+        currentCar.make = 'Acura';
+        currentCar.model = 'CSX';
+        currentCar.year = '2008';
+        currentCar.colour = 'Black';
     }
 
     function makeBid() public payable isOngoing() notOwner() returns (bool) {
@@ -87,6 +90,11 @@ contract Auction {
     function fetchHighestBid() public view returns (HighestBid memory) {
         HighestBid memory _highestBid = highestBid;
         return _highestBid;
+    }
+
+    function fetchCurrentCarDetails() public view returns (Car memory) {
+        Car memory _car = currentCar;
+        return _car;
     }
 
     function getOwner() public view returns (address) {
