@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
 import Car from './models/CarModel.js'
-const AuctionContractAddress = '0xfE94CEdF68138bCd2f119E06bd86875aa0284a5F';
+const AuctionContractAddress = '0x3311396e44C32Fd64Ad4f35ea1f4aF24AB696E54';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -16,7 +16,7 @@ function App() {
   const [isOwner, setIsOwner] = useState(false);
   const [highestBid, setHighestBid] = useState(0);
   const [highestBidder, setHighestBidder] = useState('');
- const [currentCar, setCurrentCar] = useState(new Car);
+  const [currentCar, setCurrentCar] = useState(new Car());
   async function initializeProvider() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     
@@ -46,11 +46,11 @@ function App() {
   }
 
   async function fetchCurrentCarDetails() {
-    if (typeof window.etheruem !== 'undefined') {
+    if (typeof window.ethereum !== 'undefined') {
       const contract = await initializeProvider();
       try {
         const car = await contract.fetchCurrentCarDetails();
-        setCurrentCar(car); 
+        setCurrentCar(new Car (car.make, car.model, car.year, car.colour)); 
       } catch (e) {
         console.log('error fetching car details: ', e);
       }
@@ -63,7 +63,6 @@ function App() {
       try {
         console.log("mybid: ", await account)
         const myBid = await contract.bids(account);
-        // const myBid = 5000000000000000000;
         setMyBid(parseFloat(formatEther(myBid.toString())));
       } catch (e) {
         console.log('error fetching my bid: ', e);
@@ -87,9 +86,7 @@ function App() {
 
   async function submitBid(event) {
     event.preventDefault();
-    console.log("here");
     if (typeof window.ethereum !== 'undefined') {
-      console.log("inside if");
       const contract = await initializeProvider();
       try {
         // user inputs amount in terms of ether, conver tto wei
@@ -99,10 +96,8 @@ function App() {
         // wait for smart contract to emit LogBid event then update component
         contract.on('LogBid', (_, __) => {
           fetchMyBid();
-          console.log("inside");
           fetchHighestBid();
         });
-        console.log("sent");
       } catch (e) {
         console.log('error making bid: ', e);
       }
@@ -134,6 +129,7 @@ function App() {
       fetchOwner();
       fetchMyBid();
       fetchHighestBid();
+      fetchCurrentCarDetails();
     }
   }, [account]);
 
@@ -144,6 +140,10 @@ function App() {
       <h1>Defi Car Auction</h1>
       <div>
         Current Car Up for Bidding:
+        <div>Make: {currentCar.make}</div>
+        <div>Model: {currentCar.model}</div>
+        <div>Year: {currentCar.year}</div>
+        <div>Colour: {currentCar.colour}</div>
       </div>
 
       <div className='mt-4'>
