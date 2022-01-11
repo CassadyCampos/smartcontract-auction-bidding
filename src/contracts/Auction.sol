@@ -6,6 +6,7 @@ contract Auction {
     uint256 public startTime;
     uint256 public endTime;
     mapping(address => uint256) public bids;
+    address[] public addressBids;
 
     struct Car {
         string make;
@@ -99,5 +100,9 @@ contract Auction {
 
     function getOwner() public view returns (address) {
         return owner;
+    }
+
+    function getBidCount() private view returns (uint) {
+        return addressBids.length;
     }
 }

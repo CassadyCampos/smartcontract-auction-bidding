@@ -4,7 +4,8 @@ import { ethers } from 'ethers';
 import { parseEther, formatEther } from '@ethersproject/units';
 import Auction from './abis/Auction.json';
 import Car from './models/CarModel.js'
-const AuctionContractAddress = '0x3311396e44C32Fd64Ad4f35ea1f4aF24AB696E54';
+
+const AuctionContractAddress = '0x2Bb8AbE16df39c6D8D1AB16E654B1A1D2815074d';
 const emptyAddress = '0x0000000000000000000000000000000000000000';
 
 
@@ -13,6 +14,7 @@ function App() {
   const [account, setAccount] = useState('');
   const [amount, setAmount] = useState(0);
   const [myBid, setMyBid] = useState(0);
+  const [allBids, setAllBids] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [highestBid, setHighestBid] = useState(0);
   const [highestBidder, setHighestBidder] = useState('');
@@ -69,6 +71,17 @@ function App() {
       }
     }
   }
+
+  async function fetchAllBids() {
+    if (typeof window.ethereum !== 'undefined') {
+      const contract = await initializeProvider();
+      try {
+
+      } catch (e) {
+        console.log('error fetching all bids: ', e);
+      }
+    }
+  }
  
   async function fetchOwner() {
     if (typeof window.ethereum !== 'undefined') {
@@ -105,6 +118,7 @@ function App() {
   }
 
   async function withdraw() {
+    console.log("attempting to withdraw");
     if (typeof window.ethereum !== 'undefined') {
       const contract = await initializeProvider();
       contract.on('LogWithdrawal', (_) => {
@@ -112,6 +126,7 @@ function App() {
         fetchHighestBid();
       });
       try {
+        console.log("inside try");
         await contract.withdraw();
       } catch (e) {
         console.log('error withdrawing fund: ', e);
@@ -171,7 +186,9 @@ function App() {
           <button type="submit">Submit</button>
         </form>
       ) : (
-        <div>Is owner</div>
+        <div>You own this auction
+          <button onClick={withdraw}>Withdraw</button>
+        </div>
       )}
     </div>
   );
